@@ -1,7 +1,7 @@
 
 
 # Hey Frank 👋 
-
+For convenience, I went ahead and threw this up on vercel so you can play with the widget. Access it [here](https://siso-takehome.vercel.app/). 
 
 ## There's some extra fluff in here because it's a next app and I wanted to keep the options selectors separate from the actual charts components. You probably only care about:
 1. [the chart widget](https://github.com/lucasgreenwell/siso_takehome/tree/main/dashboard/components/charts)
