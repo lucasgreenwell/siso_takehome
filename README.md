@@ -3,7 +3,7 @@
 # Hey Frank 👋 
 For convenience, I went ahead and threw this up on vercel so you can play with the widget. Access it [here](https://siso-takehome.vercel.app/). 
 
-## There's some extra fluff in here because it's a next app and I wanted to keep the options selectors separate from the actual charts components. You probably only care about:
+## There's some extra fluff in here because it's a next app and I wanted to keep the widget pretty flexible. You probably only care about:
 1. [the chart widget](https://github.com/lucasgreenwell/siso_takehome/tree/main/dashboard/components/charts)
 2. [the api route](https://github.com/lucasgreenwell/siso_takehome/blob/main/dashboard/app/api/dashboard/route.ts)
 3. [database stuff](https://github.com/lucasgreenwell/siso_takehome/tree/main/dashboard/app/api/dashboard/db)
