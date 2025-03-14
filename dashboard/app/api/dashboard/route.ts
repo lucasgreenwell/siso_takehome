@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
-// Sample data
-const dashboardData = {
+// Sample data hardcoded in the API layer
+const sampleData = {
   company: "TechGear Emporium",
   timeframe: "2023-01-01 to 2023-12-31",
   data: [
@@ -128,18 +128,81 @@ const dashboardData = {
   ],
 }
 
-export async function GET() {
+// Update the GET function to filter out non-numeric fields
+export async function GET(request: NextRequest) {
   try {
-    // Validate that each data point has a date field
-    const hasInvalidData = dashboardData.data.some((item) => !item.date)
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams
+    const fieldsParam = searchParams.get("fields")
+    const fromDate = searchParams.get("from")
+    const toDate = searchParams.get("to")
 
-    if (hasInvalidData) {
-      return NextResponse.json({ error: "Invalid data: Each data point must have a date field" }, { status: 400 })
+    // Validate data has date field
+    for (const item of sampleData.data) {
+      if (!item.date) {
+        return NextResponse.json(
+          { error: "Data validation error: Missing date field in one or more data points" },
+          { status: 400 },
+        )
+      }
     }
 
-    return NextResponse.json(dashboardData)
+    // Filter data by date range if provided
+    let filteredData = [...sampleData.data]
+
+    if (fromDate && toDate) {
+      filteredData = filteredData.filter((item) => {
+        const itemDate = new Date(item.date)
+        const from = new Date(fromDate)
+        const to = new Date(toDate)
+        return itemDate >= from && itemDate <= to
+      })
+    }
+
+    // Get all available fields (excluding date)
+    const allFields = filteredData.length > 0 ? Object.keys(filteredData[0]).filter((key) => key !== "date") : []
+
+    // Filter to only include numeric fields
+    const numericFields = allFields.filter((field) => {
+      // Check if the field contains numeric values
+      return filteredData.every((item) => {
+        const value = item[field]
+        return typeof value === "number" && !isNaN(value)
+      })
+    })
+
+    // Filter fields if specified
+    let selectedFields: string[] = []
+
+    if (fieldsParam) {
+      // Only include fields that are in the numeric fields list
+      selectedFields = fieldsParam.split(",").filter((field) => numericFields.includes(field))
+    }
+
+    // If no fields specified, return all numeric fields
+    if (selectedFields.length === 0) {
+      selectedFields = numericFields
+    }
+
+    // Create response with only the requested fields
+    const responseData = filteredData.map((item) => {
+      const result: Record<string, any> = { date: item.date }
+
+      selectedFields.forEach((field) => {
+        if (field in item) {
+          result[field] = item[field]
+        }
+      })
+
+      return result
+    })
+
+    return NextResponse.json({
+      data: responseData,
+      availableFields: numericFields,
+    })
   } catch (error) {
-    console.error("Error in dashboard API:", error)
+    console.error("API error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
