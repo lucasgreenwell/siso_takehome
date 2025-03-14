@@ -1,25 +1,28 @@
-# Dashboard with MongoDB Integration
 
-This project is a dashboard application that displays business metrics using MongoDB as the data source.
 
-## Setup
+# Hey Frank 👋 
+
+
+## There's some extra fluff in here because it's a next app and I wanted to keep the options selectors separate from the actual charts components. You probably only care about:
+1. [the chart widget](https://github.com/lucasgreenwell/siso_takehome/tree/main/dashboard/components/charts)
+2. [the api route](https://github.com/lucasgreenwell/siso_takehome/blob/main/dashboard/app/api/dashboard/route.ts)
+3. [database stuff](https://github.com/lucasgreenwell/siso_takehome/tree/main/dashboard/app/api/dashboard/db)
+
+## Setup if you wanna get it up locally
 
 ### Prerequisites
 - Node.js (v14 or higher)
-- npm
+- bun
 - MongoDB Atlas account (or local MongoDB instance)
 
 ### Installation
 1. Clone the repository
 2. Install dependencies:
    ```
-   npm install
+   bun i
    ```
 3. Create a `.env.local` file with MongoDB connection details:
    ```
-   MONGODB_USERNAME=your_username
-   MONGODB_PASSWORD=your_password
-   MONGODB_CLUSTER=your_cluster
    MONGODB_URI=your_connection_string
    ```
 
@@ -27,13 +30,13 @@ This project is a dashboard application that displays business metrics using Mon
 1. Ensure your MongoDB connection details are correctly set in `.env.local`
 2. Run the database seed script to populate MongoDB with sample data:
    ```
-   npm run seed-db
+   bun seed-db
    ```
 
 ## Development
 Start the development server:
 ```
-npm run dev
+bun dev
 ```
 
 ## API Documentation
