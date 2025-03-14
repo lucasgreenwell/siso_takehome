@@ -9,10 +9,9 @@
  */
 
 import { useMemo } from "react"
-import { Bar, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, ComposedChart } from "recharts"
 import { format, parseISO } from "date-fns"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { SingleMetricChart } from "./charts"
 
 // Component props definition
 interface ChartDisplayProps {
@@ -79,68 +78,17 @@ export function ChartDisplay({ data, type, fields }: ChartDisplayProps) {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {fields.map((field, index) => {
         const colorConfig = generateColorConfig(field, index)
-
+        
+        // Render a SingleMetricChart for each field
         return (
           <div key={field} className="w-full h-[300px]">
-            <h3 className="text-lg font-medium mb-2">{colorConfig[field].label}</h3>
-            <ChartContainer config={colorConfig} className="h-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart
-                  data={displayData}
-                  margin={{
-                    top: 10,
-                    right: 10,
-                    left: isMobile ? 10 : 20,
-                    bottom: isMobile ? 50 : 70,
-                  }}
-                >
-                  {/* Chart grid lines */}
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-
-                  {/* Date axis with responsive formatting */}
-                  <XAxis
-                    dataKey="date"
-                    angle={isMobile ? -45 : -30}
-                    textAnchor="end"
-                    height={isMobile ? 50 : 70}
-                    tick={{ fontSize: isMobile ? 10 : 12 }}
-                    interval={isMobile ? 1 : 0}
-                  />
-
-                  {/* Value axis with responsive sizing */}
-                  <YAxis 
-                    width={isMobile ? 40 : 60} 
-                    tick={{ fontSize: isMobile ? 10 : 12 }} 
-                  />
-
-                  {/* Interactive elements */}
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Legend verticalAlign="top" height={36} />
-
-                  {/* Render either bar or line chart based on type prop */}
-                  {type === "bar" ? (
-                    <Bar
-                      dataKey={field}
-                      name={colorConfig[field].label}
-                      fill={`var(--color-${field})`}
-                      stroke={`var(--color-${field})`}
-                      strokeWidth={1}
-                      radius={[4, 4, 0, 0]}
-                    />
-                  ) : (
-                    <Line
-                      type="monotone"
-                      dataKey={field}
-                      name={colorConfig[field].label}
-                      stroke={`var(--color-${field})`}
-                      strokeWidth={2}
-                      dot={{ r: isMobile ? 3 : 4 }}
-                      activeDot={{ r: isMobile ? 5 : 6 }}
-                    />
-                  )}
-                </ComposedChart>
-              </ResponsiveContainer>
-            </ChartContainer>
+            <SingleMetricChart
+              data={displayData}
+              field={field}
+              type={type}
+              colorConfig={colorConfig}
+              isMobile={isMobile}
+            />
           </div>
         )
       })}
