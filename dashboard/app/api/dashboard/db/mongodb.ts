@@ -22,12 +22,6 @@ export async function connectToDatabase() {
     throw new Error('MONGODB_URI environment variable is not defined');
   }
 
-  // Ensure the connection string has the full domain for MongoDB Atlas
-  // This fixes the "querySrv ENOTFOUND _mongodb._tcp.cluster0" error on Vercel
-  if (connectionString.includes('@cluster0') && !connectionString.includes('.mongodb.net')) {
-    connectionString = connectionString.replace('@cluster0', '@cluster0.9kcew.mongodb.net');
-  }
-
   try {
     // Connect to MongoDB with proper options
     const connection = await mongoose.connect(connectionString, {
