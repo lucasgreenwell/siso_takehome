@@ -1,20 +1,32 @@
 "use client"
 
+/**
+ * ChartDisplay Component
+ * 
+ * A responsive data visualization component that renders multiple metrics as either
+ * line or bar charts. Supports automatic color assignment, responsive layouts,
+ * and mobile-optimized data display.
+ */
+
 import { useMemo } from "react"
 import { Bar, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, ComposedChart } from "recharts"
 import { format, parseISO } from "date-fns"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { useTheme } from "next-themes"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
+// Component props definition
 interface ChartDisplayProps {
-  data: any[]
-  type: "bar" | "line"
-  fields: string[]
+  data: any[]              // Array of data points to visualize
+  type: "bar" | "line"     // Chart visualization type
+  fields: string[]         // Metric fields to display
 }
 
-// Generate a color palette for the chart
+/**
+ * Generates a color configuration for a chart field
+ * Uses CSS variables for consistent theming across the application
+ */
 const generateColorConfig = (field: string, index: number) => {
+  // Predefined chart colors from CSS variables
   const colors = [
     "hsl(var(--chart-1))",
     "hsl(var(--chart-2))",
@@ -28,6 +40,7 @@ const generateColorConfig = (field: string, index: number) => {
 
   return {
     [field]: {
+      // Convert camelCase to Title Case for display
       label: field.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase()),
       color: colors[index % colors.length],
     },
@@ -35,11 +48,14 @@ const generateColorConfig = (field: string, index: number) => {
 }
 
 export function ChartDisplay({ data, type, fields }: ChartDisplayProps) {
-  const { theme } = useTheme()
+  // Responsive breakpoint detection
   const isMobile = useMediaQuery("(max-width: 640px)")
-  const isTablet = useMediaQuery("(max-width: 1024px)")
 
-  // Format dates for display
+  /**
+   * Format date strings based on screen size
+   * Mobile: Short month (e.g., "Jan")
+   * Desktop: Month and year (e.g., "Jan 2023")
+   */
   const formattedData = useMemo(() => {
     return data.map((item) => ({
       ...item,
@@ -47,16 +63,19 @@ export function ChartDisplay({ data, type, fields }: ChartDisplayProps) {
     }))
   }, [data, isMobile])
 
-  // For mobile, reduce the number of data points to show
+  /**
+   * Reduce data points on mobile for better performance
+   * Only applies when there are more than 6 data points
+   */
   const displayData = useMemo(() => {
     if (!isMobile || data.length <= 6) return formattedData
 
-    // For mobile with more than 6 data points, show every other point
     const step = Math.ceil(data.length / 6)
     return formattedData.filter((_, index) => index % step === 0)
   }, [formattedData, isMobile, data.length])
 
   return (
+    // Responsive grid layout: 1 column on mobile, 2 on tablet, 3 on desktop
     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {fields.map((field, index) => {
         const colorConfig = generateColorConfig(field, index)
@@ -75,7 +94,10 @@ export function ChartDisplay({ data, type, fields }: ChartDisplayProps) {
                     bottom: isMobile ? 50 : 70,
                   }}
                 >
+                  {/* Chart grid lines */}
                   <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+
+                  {/* Date axis with responsive formatting */}
                   <XAxis
                     dataKey="date"
                     angle={isMobile ? -45 : -30}
@@ -84,10 +106,18 @@ export function ChartDisplay({ data, type, fields }: ChartDisplayProps) {
                     tick={{ fontSize: isMobile ? 10 : 12 }}
                     interval={isMobile ? 1 : 0}
                   />
-                  <YAxis width={isMobile ? 40 : 60} tick={{ fontSize: isMobile ? 10 : 12 }} />
+
+                  {/* Value axis with responsive sizing */}
+                  <YAxis 
+                    width={isMobile ? 40 : 60} 
+                    tick={{ fontSize: isMobile ? 10 : 12 }} 
+                  />
+
+                  {/* Interactive elements */}
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Legend verticalAlign="top" height={36} />
 
+                  {/* Render either bar or line chart based on type prop */}
                   {type === "bar" ? (
                     <Bar
                       dataKey={field}
