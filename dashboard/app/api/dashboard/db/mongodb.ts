@@ -16,15 +16,25 @@ export async function connectToDatabase() {
   }
 
   // Get connection string from environment variables
-  const connectionString = process.env.MONGODB_URI;
+  let connectionString = process.env.MONGODB_URI;
   
   if (!connectionString) {
     throw new Error('MONGODB_URI environment variable is not defined');
   }
 
+  // Ensure the connection string has the full domain for MongoDB Atlas
+  // This fixes the "querySrv ENOTFOUND _mongodb._tcp.cluster0" error on Vercel
+  if (connectionString.includes('@cluster0') && !connectionString.includes('.mongodb.net')) {
+    connectionString = connectionString.replace('@cluster0', '@cluster0.9kcew.mongodb.net');
+  }
+
   try {
-    // Connect to MongoDB
-    const connection = await mongoose.connect(connectionString);
+    // Connect to MongoDB with proper options
+    const connection = await mongoose.connect(connectionString, {
+      // These options help with connection stability
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    });
     
     console.log('MongoDB connected successfully');
     

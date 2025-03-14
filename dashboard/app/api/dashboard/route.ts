@@ -9,7 +9,12 @@ import { Metric } from "./db/models/metric"
 export async function GET(request: NextRequest) {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    try {
+      await connectToDatabase();
+    } catch (error) {
+      console.error('Failed to connect to database:', error);
+      throw error; // Re-throw to be caught by outer try-catch
+    }
 
     // Get query parameters
     const searchParams = request.nextUrl.searchParams
