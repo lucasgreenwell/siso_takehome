@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { connectToDatabase } from "../../../../lib/mongodb"
-import { Metric } from "../../../../lib/models/metric"
+import { connectToDatabase } from "./db/mongodb"
+import { Metric } from "./db/models/metric"
 
 /**
  * GET handler for dashboard metrics data
