@@ -4,7 +4,7 @@ require('dotenv').config({ path: '.env.local' });
 const mongoose = require('mongoose');
 
 /**
- * Sample data from the original API route
+ * Sample data
  */
 const sampleData = {
   company: "TechGear Emporium",
