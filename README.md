@@ -63,11 +63,6 @@ GET /api/dashboard
   ```
   GET /api/dashboard?from=2023-01-01&to=2023-03-31&fields=totalSales,orderCount
   ```
-
-## Project Structure
-- `dashboard/app/api/dashboard/route.ts`: API route for dashboard data
-- `lib/mongodb.ts`: MongoDB connection utility
-- `lib/models/metric.ts`: Mongoose schema for metrics data
 - `scripts/seed-database.ts`: Script to seed the database with sample data
 
 ## Documentation
