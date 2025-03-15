@@ -10,10 +10,6 @@ A reusable, responsive chart component for displaying a single metric in either 
 - **Customizable**: Configurable colors and styling
 - **Accessibility**: Properly labeled chart elements
 
-## Installation
-
-The component is part of the dashboard components library. No additional installation is required if you're working within the project.
-
 ## Usage
 
 ```tsx
