@@ -64,7 +64,3 @@ GET /api/dashboard
   GET /api/dashboard?from=2023-01-01&to=2023-03-31&fields=totalSales,orderCount
   ```
 - `scripts/seed-database.ts`: Script to seed the database with sample data
-
-## Documentation
-- `lib/mongodb_docs.md`: Documentation for MongoDB integration
-- `dashboard/app/api/dashboard/route_docs.md`: Documentation for the dashboard API route 
